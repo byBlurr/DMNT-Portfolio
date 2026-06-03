@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Core SEO Meta Tags -->
+    <title>Daniel Dumont &mdash; Selected Work | Cumbria Photographer</title>
+    <meta name="description" content="Professional portfolio of Daniel Dumont, an independent visual artist based in Cumbria, UK. Specialising in cinematic motorsport, dynamic action sport, and atmospheric automotive photography.">
+    <meta name="keywords" content="Daniel Dumont, photographer Cumbria, motorsport photography UK, automotive photographer, sport photography, Lake District photographer, action sports photography">
+    <meta name="author" content="Daniel Dumont">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://danieldumont.com">
+
+    <!-- Open Graph / Facebook / LinkedIn Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Daniel Dumont &mdash; Selected Work">
+    <meta property="og:description" content="Cinematic motorsport, action sport, and automotive photography by independent visual artist Daniel Dumont. Based in Cumbria, UK.">
+    <meta property="og:url" content="https://danieldumont.com">
+    <meta property="og:image" content="https://danieldumont.comimages/share-preview.jpg">
+    <meta property="og:site_name" content="Daniel Dumont Photography">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Daniel Dumont &mdash; Selected Work">
+    <meta name="twitter:description" content="Cinematic motorsport, action sport, and automotive photography by independent visual artist Daniel Dumont. Based in Cumbria, UK.">
+    <meta name="twitter:image" content="https://danieldumont.comimages/share-preview.jpg">
+
+    <!-- Structured JSON-LD Schema (Google Rich Snippets Engine) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PhotographyBusiness",
+      "name": "Daniel Dumont Photography",
+      "image": "https://danieldumont.comimages/share-preview.jpg",
+      "@id": "https://danieldumont.com#business",
+      "url": "https://danieldumont.com",
+      "telephone": "",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Cumbria",
+        "addressCountry": "GB"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 54.5772,
+        "longitude": -2.7480
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "sameAs": [
+        "https://instagram.com",
+        "https://photocrowd.com"
+      ],
+      "knowsAbout": ["Motorsport Photography", "Automotive Photography", "Sport Photography", "Landscape Photography"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <!-- Title Branding Block with New "Selected Work" Typography -->
+        <div class="header-title">
+            <h1>Daniel Dumont &mdash; <span>Selected Work</span></h1>
+        </div>
+        <!-- Geographic Location Metadata Block -->
+        <div class="header-meta">
+            <p>Cumbria, UK</p>
+        </div>
+    </header>
+
+    <!-- Navigation Curation Filters & Controls -->
+    <div class="filter-container">
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="motorsport">Motorsport</button>
+            <button class="filter-btn" data-filter="sport">Sport</button>
+            <button class="filter-btn" data-filter="automotive">Automotive</button>
+            <button class="filter-btn" data-filter="animals">Animals</button>
+            <button class="filter-btn" data-filter="landscapes">Landscapes</button>
+            <button class="filter-btn" data-filter="portraits">Portraits</button>
+            <button class="filter-btn" data-filter="other">Other</button>
+        </div>
+        <div class="filter-controls">
+            <!-- Rebuilt Symmetrical About Toggle Icon Button -->
+            <button id="aboutToggle" class="about-toggle-btn" title="View Biography">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+            
+            <button id="rotationToggle" class="control-btn" title="Toggle Auto-Refresh">
+                <!-- Plain Vector Pause Icon (Visible by Default) -->
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="4" x2="18" y2="20"></line>
+                    <line x1="6" y1="4" x2="6" y2="20"></line>
+                </svg>
+                <!-- Plain Vector Play Icon (Hidden by Default) -->
+                <svg class="icon-play hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Integrated Minimalist Inline About Profile Section -->
+    <div id="aboutSection" class="about-section-container hidden">
+        <div class="about-section-content">
+            <p class="about-lead">Daniel Dumont is an independent visual artist based in Cumbria, UK, specializing in cinematic motorsport, action sport, and atmospheric automotive photography.</p>
+            <p>Capturing the raw intersection of high speed, structured mechanical design, and dramatic natural terrains, his archive focused on freezing high-contrast, editorial moments with pure clarity.</p>
+            <p class="about-contact">For assignments, licensing, or commercial inquiries: <a href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></p>
+        </div>
+    </div>
+
+    <!-- The Masonry Grid Canvas -->
+    <main class="gallery-container">
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </main>
+
+    <!-- Isolated Empty State System -->
+    <div id="emptyState" class="empty-state hidden fade-out">
+        <p>no images available in this collection</p>
+    </div>
+
+    <!-- Modern Minimalist Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-copyright">
+                <p>&copy; <span id="copyrightYear"></span> Daniel Dumont. All Rights Reserved.</p>
+            </div>
+            <div class="footer-links">
+                <a href="mailto:hello@yourdomain.com" class="footer-link">Contact</a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" class="footer-link">Instagram</a>
+                <a href="https://photocrowd.com" target="_blank" rel="noopener" class="footer-link">Photocrowd</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fixed Glassmorphic Lightbox Infrastructure Area -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightboxClose">close</span>
+        
+        <!-- FIXED CONTROL DECOUPLING: Structural row mapped separately using classes in style.css -->
+        <div class="lightbox-nav-controls">
+            <button id="lightboxPrev" class="lightbox-nav-arrow" title="Previous Image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+
+            <span class="lightbox-counter" id="lightboxCounter"></span>
+
+            <button id="lightboxNext" class="lightbox-nav-arrow" title="Next Image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+        
+        <!-- Frame container isolating image scaling profiles -->
+        <div class="lightbox-img-wrapper">
+            <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged gallery view">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
