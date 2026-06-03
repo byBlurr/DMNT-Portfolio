@@ -125,30 +125,72 @@ function generateAndRenderGallery() {
         }, 50);
     });
 }
-// Lightbox Syncing Renderer Subroutine Module
+
+const lightboxExif = document.getElementById('lightboxExif'); // New Exif Selector
+
+// Lightbox Syncing Renderer Subroutine Module with Async Exif Extraction
 function updateLightboxContent() {
     if (activeImagePool.length === 0) return;
     
     const activeData = activeImagePool[currentLightboxIndex];
     lightboxImg.src = activeData.src;
     
+    // Sync the sequential counter numbers (01 / 09)
     const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
     const totalNumber = String(activeImagePool.length).padStart(2, '0');
     lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
+    
+    // Clear out any previous text to prevent layout overlapping jumps
+    lightboxExif.textContent = "reading data...";
+    
+    // ASYNC EXIF PIPELINE: Intercept image data stream and extract camera settings
+    if (window.exifr) {
+        window.exifr.parse(activeData.src, {
+            pick: ['Model', 'FocalLength', 'FNumber', 'ExposureTime', 'ISO']
+        })
+        .then(exifData => {
+            if (!exifData) {
+                lightboxExif.textContent = ""; // Clear string cleanly if no metadata exists
+                return;
+            }
+            
+            // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
+            let shutter = "---";
+            if (exifData.ExposureTime) {
+                const exp = exifData.ExposureTime;
+                if (exp < 1) {
+                    shutter = `1/${Math.round(1 / exp)}s`;
+                } else {
+                    shutter = `${exp}s`;
+                }
+            }
+            
+            // Gather variables and handle null fallbacks safely
+            const camera = exifData.Model || "Unknown Camera";
+            const focal  = exifData.FocalLength ? `${Math.round(exifData.FocalLength)}mm` : "---";
+            const fStop  = exifData.FNumber ? `f/${exifData.FNumber}` : "---";
+            const iso    = exifData.ISO ? `ISO ${exifData.ISO}` : "---";
+            
+            // Typeset the finished editorial horizontal metadata strip
+            lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${iso}`;
+        })
+        .catch(() => {
+            lightboxExif.textContent = ""; // Fail silently if asset blocks read parameters
+        });
+    } else {
+        lightboxExif.textContent = "";
+    }
 }
 
 // Linear Array Pointer Shifter Module with Transitional Crossfade Hold
 function navigateLightbox(direction) {
     if (activeImagePool.length === 0) return;
     
-    // Add transitioning fade-out class to image element
     lightboxImg.classList.add('lightbox-changing');
     
-    // Wait for the fade-out duration before changing image content source
     setTimeout(() => {
         currentLightboxIndex += direction;
         
-        // Check edge boundaries for full rotational loop cycling wrap-around
         if (currentLightboxIndex >= activeImagePool.length) {
             currentLightboxIndex = 0;
         } else if (currentLightboxIndex < 0) {
@@ -156,33 +198,25 @@ function navigateLightbox(direction) {
         }
         
         updateLightboxContent();
-        
-        // Remove class to trigger smooth fade back in
         lightboxImg.classList.remove('lightbox-changing');
-    }, 200); // Short millisecond transition block
+    }, 200); 
 }
 
 // 3. Automated 30-second cycle engine control blocks
 function startAutoRotationLoop() {
     clearInterval(rotationTimer);
-    
-    // Safely block timer initialisation if the user paused rotation
     if (isRotationLocked) return;
     
     rotationTimer = setInterval(() => {
         const activeItems = document.querySelectorAll('.gallery-item');
-        
         if (activeItems.length === 0) {
             generateAndRenderGallery();
             return;
         }
-
         activeItems.forEach(item => item.classList.add('fade-out'));
-
         setTimeout(() => {
             generateAndRenderGallery();
         }, 600);
-
     }, ROTATION_INTERVAL);
 }
 
@@ -194,26 +228,22 @@ function stopAutoRotationLoop() {
 // 5. Lightbox close trigger helper: Closes modal and safely restarts rotation
 function dismissLightbox() {
     lightbox.classList.remove('active');
-    startAutoRotationLoop(); // Resumes background image updates instantly
+    startAutoRotationLoop(); 
 }
 
 // 6. Manual user filtering menu button bindings
 function setupFilterInteractions() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.classList.contains('active')) return; 
-            
             document.querySelector('.filter-btn.active').classList.remove('active');
             btn.classList.add('active');
-            
             currentActiveFilter = btn.getAttribute('data-filter');
             
             const activeItems = document.querySelectorAll('.gallery-item');
             if (activeItems.length > 0) {
                 activeItems.forEach(item => item.classList.add('fade-out'));
-                
                 setTimeout(() => {
                     generateAndRenderGallery();
                     startAutoRotationLoop();
@@ -248,7 +278,6 @@ function checkCategoryCount(limitedItemsPool) {
 // 8. Manual Rotation Toggle Binding Logic (Updated for Play/Pause icons)
 rotationToggle.addEventListener('click', () => {
     isRotationLocked = !isRotationLocked;
-    
     if (isRotationLocked) {
         stopAutoRotationLoop();
         rotationToggle.classList.add('locked');
@@ -273,7 +302,6 @@ function injectCurrentYear() {
 // 10. Inline About Toggle Controller
 aboutToggle.addEventListener('click', () => {
     const isHidden = aboutSection.classList.contains('hidden');
-    
     if (isHidden) {
         aboutSection.classList.remove('hidden');
         aboutToggle.classList.add('active');
@@ -285,7 +313,7 @@ aboutToggle.addEventListener('click', () => {
 
 // Inline Directional Click Button Event Mappings
 lightboxPrev.addEventListener('click', (e) => {
-    e.stopPropagation(); // Keep click from falling through and firing a close modal trigger
+    e.stopPropagation(); 
     navigateLightbox(-1);
 });
 lightboxNext.addEventListener('click', (e) => {
@@ -302,7 +330,6 @@ lightbox.addEventListener('click', (e) => {
 // Extended Keyboard Tracking Array (Tracks Arrow Keys and Escape)
 window.addEventListener('keydown', (e) => { 
     if (!lightbox.classList.contains('active')) return;
-    
     if (e.key === 'Escape') dismissLightbox();
     else if (e.key === 'ArrowLeft') navigateLightbox(-1);
     else if (e.key === 'ArrowRight') navigateLightbox(1);
