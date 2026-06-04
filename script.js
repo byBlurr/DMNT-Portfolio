@@ -27,6 +27,9 @@ const iconPause = rotationToggle.querySelector('.icon-pause');
 const iconPlay = rotationToggle.querySelector('.icon-play');
 const aboutToggle = document.getElementById('aboutToggle');
 const aboutSection = document.getElementById('aboutSection');
+const themeToggle = document.getElementById('themeToggle');
+const iconSun = themeToggle.querySelector('.icon-sun');
+const iconMoon = themeToggle.querySelector('.icon-moon');
 
 let allDiscoveredItems = [];
 let rotationTimer = null;
@@ -36,6 +39,25 @@ let isRotationLocked = false;     // Tracks manual suspension status
 // Navigation Memory Shifting Anchors
 let activeImagePool = [];
 let currentLightboxIndex = 0;
+
+// Swipe detection
+let touchStartX = 0;
+let touchStartY = 0;
+const SWIPE_THRESHOLD = 50;
+
+// Initialize theme from localStorage
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        iconSun.classList.add('hidden');
+        iconMoon.classList.remove('hidden');
+    } else {
+        document.body.classList.remove('light-mode');
+        iconSun.classList.remove('hidden');
+        iconMoon.classList.add('hidden');
+    }
+}
 
 // NATIVE VARIABLE ENGINE: Maps directly to the linked manifest script file. Works 100% offline via file:/// protocol.
 function loadStaticManifest() {
@@ -98,12 +120,29 @@ function generateAndRenderGallery() {
         item.className = 'gallery-item fade-out';
         item.setAttribute('data-category', itemData.category);
         
+        // Create blur-up placeholder effect
+        const wrapper = document.createElement('div');
+        wrapper.className = 'gallery-item-wrapper';
+        
+        // Low-quality blur placeholder (using inline data URI or subtle gradient)
+        const blur = document.createElement('div');
+        blur.className = 'gallery-item-blur';
+        blur.style.backgroundImage = `url('${itemData.src}')`;
+        
         const img = document.createElement('img');
         img.src = itemData.src;
         img.alt = `Photography work under ${itemData.category}`;
         img.loading = 'lazy';
+        img.decoding = 'async';
+        
+        // Handle image load for blur-up effect
+        img.onload = function() {
+            blur.classList.add('loaded');
+        };
 
-        item.appendChild(img);
+        wrapper.appendChild(blur);
+        wrapper.appendChild(img);
+        item.appendChild(wrapper);
         galleryGrid.appendChild(item);
 
         // Open Lightbox Event: Open targets, configure anchors, and pause timers
@@ -111,7 +150,8 @@ function generateAndRenderGallery() {
             currentLightboxIndex = index;
             updateLightboxContent();
             lightbox.classList.add('active');
-            stopAutoRotationLoop(); 
+            stopAutoRotationLoop();
+            document.body.style.overflow = 'hidden';
         });
 
         setTimeout(() => {
@@ -233,6 +273,7 @@ function stopAutoRotationLoop() {
 // 5. Lightbox close trigger helper: Closes modal and safely restarts rotation
 function dismissLightbox() {
     lightbox.classList.remove('active');
+    document.body.style.overflow = '';
     startAutoRotationLoop(); 
 }
 
@@ -320,6 +361,22 @@ aboutToggle.addEventListener('click', () => {
     }
 });
 
+// 11. Dark/Light Mode Toggle
+themeToggle.addEventListener('click', () => {
+    const isDarkMode = !document.body.classList.contains('light-mode');
+    if (isDarkMode) {
+        document.body.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+        iconSun.classList.add('hidden');
+        iconMoon.classList.remove('hidden');
+    } else {
+        document.body.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+        iconSun.classList.remove('hidden');
+        iconMoon.classList.add('hidden');
+    }
+});
+
 // Inline Directional Click Button Event Mappings
 lightboxPrev.addEventListener('click', (e) => {
     e.stopPropagation(); 
@@ -336,6 +393,33 @@ lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) dismissLightbox(); 
 });
 
+// Swipe gesture detection
+lightbox.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+lightbox.addEventListener('touchend', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Only register horizontal swipes
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaY) < SWIPE_THRESHOLD) {
+        if (deltaX > 0) {
+            // Swiped right - previous image
+            navigateLightbox(-1);
+        } else {
+            // Swiped left - next image
+            navigateLightbox(1);
+        }
+    }
+}, { passive: true });
+
 // Extended Keyboard Tracking Array (Tracks Arrow Keys and Escape)
 window.addEventListener('keydown', (e) => { 
     if (!lightbox.classList.contains('active')) return;
@@ -346,6 +430,7 @@ window.addEventListener('keydown', (e) => {
 
 // MODIFIED INITIALIZATION LIFECYCLE: Read the generated static manifest file natively as a script element variable
 window.addEventListener('load', () => {
+    initTheme();
     loadStaticManifest();
     setupFilterInteractions();
     injectCurrentYear();
