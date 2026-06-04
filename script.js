@@ -189,7 +189,7 @@ function updateLightboxContent() {
                 const focalLength = EXIF.getTag(this, 'FocalLength');
                 const fNumber = EXIF.getTag(this, 'FNumber');
                 const exposureTime = EXIF.getTag(this, 'ExposureTime');
-                const iso = EXIF.getTag(this, 'ISO');
+                const iso = EXIF.getTag(this, 'ISOSpeedRatings');
                 
                 // If no EXIF data found, clear and return
                 if (!model && !lense && !focalLength && !fNumber && !exposureTime && !iso) {
