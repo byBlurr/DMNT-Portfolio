@@ -170,8 +170,11 @@ function updateLightboxContent() {
     // Clear out any previous text to prevent layout overlapping jumps
     lightboxExif.textContent = "reading data...";
 
-    // Bind the image data load directly to the DOM-bound target component to allow data reading
-    lightboxImg.onload = function() {
+    // CRITICAL CACHE CLEAR: Purge the custom property cache record stored internally by exif-js
+    lightboxImg.exifdata = null;
+
+    // Use a clean named function for the event listener to avoid duplicate listener stacking logs
+    function parseExifDataOnLoad() {
         if (typeof EXIF !== 'undefined') {
             EXIF.getData(lightboxImg, function() {
                 const model = EXIF.getTag(this, 'Model');
@@ -208,10 +211,11 @@ function updateLightboxContent() {
         } else {
             lightboxExif.textContent = "";
         }
-        // Remove the listener hook safely to prevent stacked operational executions on subsequent flips
-        lightboxImg.onload = null;
-    };
+        // Remove the listener hook safely using the explicit function handle
+        lightboxImg.removeEventListener('load', parseExifDataOnLoad);
+    }
     
+    lightboxImg.addEventListener('load', parseExifDataOnLoad);
     lightboxImg.src = activeData.src;
     
     // Sync the sequential counter numbers (01 / 09)
