@@ -137,39 +137,51 @@ function updateLightboxContent() {
     lightboxExif.textContent = "reading data...";
     
     // ASYNC EXIF PIPELINE: Intercept image data stream and extract camera settings
-    if (window.exifr) {
-        window.exifr.parse(activeData.src, {
-            pick: ['Model', 'FocalLength', 'FNumber', 'ExposureTime', 'ISO']
-        })
-        .then(exifData => {
-            if (!exifData) {
-                lightboxExif.textContent = ""; // Clear string cleanly if no metadata exists
-                return;
-            }
-           
-            // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
-            let shutter = "---";
-            if (exifData.ExposureTime) {
-                const exp = exifData.ExposureTime;
-                if (exp < 1) {
-                    shutter = `1/${Math.round(1 / exp)}s`;
-                } else {
-                    shutter = `${exp}s`;
+    if (typeof EXIF !== 'undefined') {
+        // Create an image object to read EXIF data from
+        const tempImg = new Image();
+        tempImg.crossOrigin = 'anonymous';
+        
+        tempImg.onload = function() {
+            EXIF.getData(tempImg, function() {
+                const model = EXIF.getTag(this, 'Model');
+                const focalLength = EXIF.getTag(this, 'FocalLength');
+                const fNumber = EXIF.getTag(this, 'FNumber');
+                const exposureTime = EXIF.getTag(this, 'ExposureTime');
+                const iso = EXIF.getTag(this, 'ISO');
+                
+                // If no EXIF data found, clear and return
+                if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
+                    lightboxExif.textContent = "";
+                    return;
                 }
-            }
-            
-            // Gather variables and handle null fallbacks safely
-            const camera = exifData.Model || "Unknown Camera";
-            const focal  = exifData.FocalLength ? `${Math.round(exifData.FocalLength)}mm` : "---";
-            const fStop  = exifData.FNumber ? `f/${exifData.FNumber}` : "---";
-            const iso    = exifData.ISO ? `ISO ${exifData.ISO}` : "---";
-            
-            // Typeset the finished editorial horizontal metadata strip
-            lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${iso}`;
-        })
-        .catch(() => {
-            lightboxExif.textContent = ""; // Fail silently if asset blocks read parameters
-        });
+                
+                // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
+                let shutter = "---";
+                if (exposureTime) {
+                    if (exposureTime < 1) {
+                        shutter = `1/${Math.round(1 / exposureTime)}s`;
+                    } else {
+                        shutter = `${exposureTime}s`;
+                    }
+                }
+                
+                // Gather variables and handle null fallbacks safely
+                const camera = model || "Unknown Camera";
+                const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
+                const fStop = fNumber ? `f/${fNumber}` : "---";
+                const isoVal = iso ? `ISO ${iso}` : "---";
+                
+                // Typeset the finished editorial horizontal metadata strip
+                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+            });
+        };
+        
+        tempImg.onerror = function() {
+            lightboxExif.textContent = "";
+        };
+        
+        tempImg.src = activeData.src;
     } else {
         lightboxExif.textContent = "";
     }
