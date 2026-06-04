@@ -185,19 +185,20 @@ function updateLightboxContent() {
         tempImg.onload = function() {
             EXIF.getData(tempImg, function() {
                 const model = EXIF.getTag(this, 'Model');
+                const lense = EXIF.getTag(this, "LensModel");
                 const focalLength = EXIF.getTag(this, 'FocalLength');
                 const fNumber = EXIF.getTag(this, 'FNumber');
                 const exposureTime = EXIF.getTag(this, 'ExposureTime');
                 const iso = EXIF.getTag(this, 'ISO');
                 
                 // If no EXIF data found, clear and return
-                if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
+                if (!model && !lense && !focalLength && !fNumber && !exposureTime && !iso) {
                     lightboxExif.textContent = "";
                     return;
                 }
                 
                 // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
-                let shutter = "---";
+                let shutter = "1/--";
                 if (exposureTime) {
                     if (exposureTime < 1) {
                         shutter = `1/${Math.round(1 / exposureTime)}s`;
@@ -208,12 +209,12 @@ function updateLightboxContent() {
                 
                 // Gather variables and handle null fallbacks safely
                 const camera = model || "Unknown Camera";
-                const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
-                const fStop = fNumber ? `f/${fNumber}` : "---";
-                const isoVal = iso ? `ISO ${iso}` : "---";
+                const focal = focalLength ? `${Math.round(focalLength)}mm` : "--- mm";
+                const fStop = fNumber ? `f/${fNumber}` : "f/--";
+                const isoVal = iso ? `ISO ${iso}` : "ISO ---";
                 
                 // Typeset the finished editorial horizontal metadata strip
-                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+                lightboxExif.textContent = `${camera} - ${lense}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
             });
         };
         
