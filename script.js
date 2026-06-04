@@ -174,7 +174,7 @@ function updateLightboxContent() {
     lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
     
     // Clear out any previous text to prevent layout overlapping jumps
-    lightboxExif.textContent = "reading data...";
+    lightboxExif.textContent = "";
     
     // ASYNC EXIF PIPELINE: Intercept image data stream and extract camera settings
     if (typeof EXIF !== 'undefined') {
@@ -194,7 +194,7 @@ function updateLightboxContent() {
                 
                 // If no EXIF data found, clear and return
                 if (!model && !lense && !focalLength && !fNumber && !exposureTime && !iso) {
-                    lightboxExif.textContent = "";
+                    lightboxExif.textContent = "Unable to load camera setting data";
                     return;
                 }
                 
