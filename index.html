@@ -27,7 +27,7 @@
     <meta name="twitter:image" content="https://danieldumont.com">
 
     <!-- EXIF Data Parser: Extract camera metadata from images -->
-    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <script src="https://jsdelivr.net"></script>
 
     <!-- PERFORMANCE UPGRADE: Import your local batch-generated manifest natively. Bypasses browser CORS rules completely. -->
     <script src="images/manifest.js"></script>
@@ -114,7 +114,6 @@
     <div id="emptyState" class="empty-state hidden fade-out">
         <p>no images available in this collection</p>
     </div>
-
     <!-- Modern Minimalist Footer Section -->
     <footer>
         <div class="footer-content">
@@ -135,6 +134,11 @@
         
         <!-- Fixed Control Decoupling Wrap Container Row -->
         <div class="lightbox-nav-controls">
+            <!-- ADDED: Category identifier label slotted above the numeric layout row -->
+            <div class="lightbox-category-container">
+                <span id="lightboxCategory" class="lightbox-category-text"></span>
+            </div>
+
             <div class="lightbox-nav-row">
                 <button id="lightboxPrev" class="lightbox-nav-arrow" title="Previous Image (← or swipe left)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>

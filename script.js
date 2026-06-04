@@ -16,6 +16,7 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const lightboxCounter = document.getElementById('lightboxCounter'); 
+const lightboxCategory = document.getElementById('lightboxCategory'); // ADDED: New structural category selector
 
 // Lightbox Navigation Selectors
 const lightboxPrev = document.getElementById('lightboxPrev');
@@ -159,7 +160,6 @@ function generateAndRenderGallery() {
         }, 50);
     });
 }
-
 const lightboxExif = document.getElementById('lightboxExif'); // New Exif Selector
 // Lightbox Syncing Renderer Subroutine Module with Async Exif Extraction
 function updateLightboxContent() {
@@ -172,6 +172,11 @@ function updateLightboxContent() {
     const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
     const totalNumber = String(activeImagePool.length).padStart(2, '0');
     lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
+
+    // ADDED: Inject the active photograph's category name into the structural text area
+    if (lightboxCategory) {
+        lightboxCategory.textContent = activeData.category;
+    }
     
     // Clear out any previous text to prevent layout overlapping jumps
     lightboxExif.textContent = "reading data...";
@@ -276,7 +281,6 @@ function dismissLightbox() {
     document.body.style.overflow = '';
     startAutoRotationLoop(); 
 }
-
 // 6. Manual user filtering menu button bindings
 function setupFilterInteractions() {
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -387,23 +391,23 @@ lightboxNext.addEventListener('click', (e) => {
     navigateLightbox(1);
 });
 
-// Unified Lightbox Dismiss Triggers (Fires dismissLightbox to resume timer)
+// Unified Lightbox Dismiss Triggers
 lightboxClose.addEventListener('click', dismissLightbox);
 lightbox.addEventListener('click', (e) => { 
-    if (e.target === lightbox) dismissLightbox(); 
+    dismissLightbox(); 
 });
 
 // Swipe gesture detection
 lightbox.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches.clientX;
+    touchStartY = e.touches.clientY;
 }, { passive: true });
 
 lightbox.addEventListener('touchend', (e) => {
     if (!lightbox.classList.contains('active')) return;
     
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
+    const touchEndX = e.changedTouches.clientX;
+    const touchEndY = e.changedTouches.clientY;
     
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;

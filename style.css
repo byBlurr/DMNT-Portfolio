@@ -312,7 +312,6 @@ body.light-mode .control-btn.locked {
     overflow: hidden;
     background-color: var(--bg-surface);
 }
-
 .gallery-item-blur {
     position: absolute;
     top: 0;
@@ -508,7 +507,7 @@ body.light-mode .lightbox {
 
 .lightbox-nav-controls {
     position: absolute;
-    top: 40px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -517,6 +516,24 @@ body.light-mode .lightbox {
     justify-content: center;
     gap: 16px;
     z-index: 2100;
+}
+
+/* ADDED: Styling rules for your newly declared category label element block */
+.lightbox-category-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 20px;
+}
+
+.lightbox-category-text {
+    font-family: var(--font-heading);
+    color: var(--accent-warm);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .lightbox-nav-row {
@@ -621,7 +638,7 @@ body.light-mode kbd {
 .lightbox-img-wrapper {
     width: 85%;
     height: 70vh;
-    margin-top: 60px;
+    margin-bottom: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -660,7 +677,6 @@ body.light-mode .lightbox-content {
 }
 
 .lightbox-close:hover { opacity: 1; color: var(--accent-warm); }
-
 /* --- Responsive Adjustments --- */
 @media (max-width: 1100px) {
     .gallery-grid { column-count: 2; column-gap: 20px; }
@@ -682,10 +698,11 @@ body.light-mode .lightbox-content {
     .gallery-container { padding: 30px 20px 60px 20px; }
 
     /* Mobile lightbox improvements */
-    .lightbox-nav-controls { top: 20px; gap: 12px; }
+    .lightbox-nav-controls { bottom: 20px; gap: 12px; }
+    .lightbox-category-text { font-size: 0.7rem; letter-spacing: 0.15em; } /* MODIFIED: Sized nicely for mobile spaces */
     .lightbox-nav-row { gap: 16px; }
     .lightbox-close { top: auto; bottom: 20px; right: 50%; transform: translateX(50%); font-size: 0.8rem; }
-    .lightbox-img-wrapper { height: 50vh; margin-top: 30px; width: 90%; }
+    .lightbox-img-wrapper { height: 50vh; margin-bottom: 30px; width: 90%; }
     .lightbox-exif-text { font-size: 0.65rem; max-width: 85vw; }
     .lightbox-hints { gap: 12px; font-size: 0.55rem; }
     .hint-item { gap: 4px; }
@@ -700,8 +717,8 @@ body.light-mode .lightbox-content {
     .gallery-container { padding: 20px 16px 40px 16px; }
     .filter-container { padding: 0 16px 20px 16px; gap: 10px; }
     .gallery-item { border-radius: 8px; }
-    .lightbox-img-wrapper { height: 45vh; margin-top: 20px; }
-    .lightbox-nav-controls { top: 16px; }
+    .lightbox-img-wrapper { height: 45vh; margin-bottom: 20px; }
+    .lightbox-nav-controls { bottom: 16px; }
     .lightbox-close { bottom: 16px; right: 50%; font-size: 0.75rem; }
     .filter-btn { font-size: 0.8rem; padding-bottom: 6px; }
     .about-toggle-btn,
