@@ -2,7 +2,7 @@
 const folderPaths = {
     sport: 'images/sport/',
     automotive: 'images/automotive/',
-    wildlife: 'images/animals/',
+    wildlife: 'images/wildlife/',
     other: 'images/other/'
 };
 
