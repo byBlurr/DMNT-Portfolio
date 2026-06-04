@@ -1,16 +1,12 @@
-// CONFIGURATION: Map category names to their respective subfolder paths
-const subfolders = [
-    { name: 'motorsport', path: 'images/motorsport/' },
-    { name: 'sport', path: 'images/sport/' },
-    { name: 'automotive', path: 'images/automotive/' },
-    { name: 'animals', path: 'images/animals/' },
-    { name: 'landscapes', path: 'images/landscapes/' },
-    { name: 'portraits', path: 'images/portraits/' },
-    { name: 'other', path: 'images/other/' }
-];
-const imageExtension = 'jpg'; 
+// CONFIGURATION: Base paths for your assets matching your folder structures
+const folderPaths = {
+    sport: 'images/sport/',
+    automotive: 'images/automotive/',
+    wildlife: 'images/wildlife/',
+    other: 'images/other/'
+};
 
-// DISPLAY RULES: Limit to 9 images and rotate them every 30 seconds (30000ms)
+// DISPLAY RULES: Limit to 9 images on "Preview", but show everything on single categories
 const MAX_DISPLAY_LIMIT = 9;
 const ROTATION_INTERVAL = 30000; 
 
@@ -33,52 +29,46 @@ const aboutToggle = document.getElementById('aboutToggle');
 const aboutSection = document.getElementById('aboutSection');
 
 let allDiscoveredItems = [];
-let currentFolderIndex = 0;
-let currentFileIndex = 1;
 let rotationTimer = null;
-let currentActiveFilter = 'all'; // Tracks your currently selected menu tab
+let currentActiveFilter = 'preview'; 
 let isRotationLocked = false;     // Tracks manual suspension status
 
 // Navigation Memory Shifting Anchors
 let activeImagePool = [];
 let currentLightboxIndex = 0;
 
-// 1. Asynchronously traverse category directories sequentially
-function scanSubfolders() {
-    if (currentFolderIndex >= subfolders.length) {
-        // Kick off the initial layout load process
-        generateAndRenderGallery();
-        // Start the automated 30-second loop interval
-        startAutoRotationLoop();
-        return;
+// NATIVE VARIABLE ENGINE: Maps directly to the linked manifest script file. Works 100% offline via file:/// protocol.
+function loadStaticManifest() {
+    allDiscoveredItems = [];
+    
+    // Check if the batch file global variable is present on load
+    if (typeof portfolioManifest !== 'undefined') {
+        Object.keys(portfolioManifest).forEach(category => {
+            const fileNamesArray = portfolioManifest[category];
+            const basePath = folderPaths[category];
+            
+            if (basePath && fileNamesArray) {
+                fileNamesArray.forEach(fileName => {
+                    allDiscoveredItems.push({
+                        src: `${basePath}${fileName}`,
+                        category: category
+                    });
+                });
+            }
+        });
+    } else {
+        console.error("The portfolioManifest variable is not defined. Ensure images/manifest.js was generated.");
     }
 
-    const currentFolder = subfolders[currentFolderIndex];
-    const testImg = new Image();
-    const srcUrl = `${currentFolder.path}${currentFileIndex}.${imageExtension}`;
-    
-    testImg.src = srcUrl;
-    
-    testImg.onload = function() {
-        allDiscoveredItems.push({
-            src: srcUrl,
-            category: currentFolder.name
-        });
-        currentFileIndex++;
-        scanSubfolders();
-    };
-
-    testImg.onerror = function() {
-        currentFolderIndex++;
-        currentFileIndex = 1; 
-        scanSubfolders();
-    };
+    // Instantly reveal your error-free gallery canvas layout
+    generateAndRenderGallery();
+    startAutoRotationLoop();
 }
 
 // 2. Extracts, randomises, and prints elements based on current filter status
 function generateAndRenderGallery() {
     let targetPool = [];
-    if (currentActiveFilter === 'all') {
+    if (currentActiveFilter === 'preview') {
         targetPool = [...allDiscoveredItems];
     } else {
         targetPool = allDiscoveredItems.filter(item => item.category === currentActiveFilter);
@@ -90,8 +80,12 @@ function generateAndRenderGallery() {
         [targetPool[i], targetPool[j]] = [targetPool[j], targetPool[i]];
     }
 
-    // Slice collection cleanly down to the maximum display cap metric
-    activeImagePool = targetPool.slice(0, MAX_DISPLAY_LIMIT);
+    // Only cap at 9 if "Preview" is active. Otherwise, render the entire pool.
+    if (currentActiveFilter === 'preview') {
+        activeImagePool = targetPool.slice(0, MAX_DISPLAY_LIMIT);
+    } else {
+        activeImagePool = targetPool;
+    }
 
     // Check to reveal "no images available" message if sliced subset is 0
     checkCategoryCount(activeImagePool);
@@ -127,7 +121,6 @@ function generateAndRenderGallery() {
 }
 
 const lightboxExif = document.getElementById('lightboxExif'); // New Exif Selector
-
 // Lightbox Syncing Renderer Subroutine Module with Async Exif Extraction
 function updateLightboxContent() {
     if (activeImagePool.length === 0) return;
@@ -153,7 +146,7 @@ function updateLightboxContent() {
                 lightboxExif.textContent = ""; // Clear string cleanly if no metadata exists
                 return;
             }
-            
+           
             // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
             let shutter = "---";
             if (exifData.ExposureTime) {
@@ -202,10 +195,10 @@ function navigateLightbox(direction) {
     }, 200); 
 }
 
-// 3. Automated 30-second cycle engine control blocks
+// 3. Automated cycle engine control blocks
 function startAutoRotationLoop() {
     clearInterval(rotationTimer);
-    if (isRotationLocked) return;
+    if (isRotationLocked || currentActiveFilter !== 'preview') return;
     
     rotationTimer = setInterval(() => {
         const activeItems = document.querySelectorAll('.gallery-item');
@@ -241,6 +234,12 @@ function setupFilterInteractions() {
             btn.classList.add('active');
             currentActiveFilter = btn.getAttribute('data-filter');
             
+            if (currentActiveFilter === 'preview') {
+                rotationToggle.style.display = 'flex';
+            } else {
+                rotationToggle.style.display = 'none';
+            }
+            
             const activeItems = document.querySelectorAll('.gallery-item');
             if (activeItems.length > 0) {
                 activeItems.forEach(item => item.classList.add('fade-out'));
@@ -265,13 +264,11 @@ function checkCategoryCount(limitedItemsPool) {
         }, 50);
     } else {
         emptyState.classList.add('fade-out');
-        const fadeHandler = function() {
+        emptyState.addEventListener('transitionend', function() {
             if (emptyState.classList.contains('fade-out')) {
                 emptyState.classList.add('hidden');
             }
-            emptyState.removeEventListener('transitionend', fadeHandler);
-        };
-        emptyState.addEventListener('transitionend', fadeHandler);
+        }, { once: true });
     }
 }
 
@@ -335,7 +332,9 @@ window.addEventListener('keydown', (e) => {
     else if (e.key === 'ArrowRight') navigateLightbox(1);
 });
 
-// Fire pipelines, activate category filters, and print copyright context
-scanSubfolders();
-setupFilterInteractions();
-injectCurrentYear();
+// MODIFIED INITIALIZATION LIFECYCLE: Read the generated static manifest file natively as a script element variable
+window.addEventListener('load', () => {
+    loadStaticManifest();
+    setupFilterInteractions();
+    injectCurrentYear();
+});

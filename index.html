@@ -17,59 +17,20 @@
     <meta property="og:title" content="Daniel Dumont &mdash; Selected Work">
     <meta property="og:description" content="Cinematic motorsport, action sport, and automotive photography by independent visual artist Daniel Dumont. Based in Cumbria, UK.">
     <meta property="og:url" content="https://danieldumont.com">
-    <meta property="og:image" content="https://danieldumont.comimages/share-preview.jpg">
+    <meta property="og:image" content="https://danieldumont.com">
     <meta property="og:site_name" content="Daniel Dumont Photography">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Daniel Dumont &mdash; Selected Work">
     <meta name="twitter:description" content="Cinematic motorsport, action sport, and automotive photography by independent visual artist Daniel Dumont. Based in Cumbria, UK.">
-    <meta name="twitter:image" content="https://danieldumont.comimages/share-preview.jpg">
-
-    <!-- Structured JSON-LD Schema (Google Rich Snippets Engine) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "PhotographyBusiness",
-      "name": "Daniel Dumont Photography",
-      "image": "https://danieldumont.comimages/share-preview.jpg",
-      "@id": "https://danieldumont.com#business",
-      "url": "https://danieldumont.com",
-      "telephone": "",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Cumbria",
-        "addressCountry": "GB"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 54.5772,
-        "longitude": -2.7480
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday"
-        ],
-        "opens": "00:00",
-        "closes": "23:59"
-      },
-      "sameAs": [
-        "https://instagram.com",
-        "https://photocrowd.com"
-      ],
-      "knowsAbout": ["Motorsport Photography", "Automotive Photography", "Sport Photography", "Landscape Photography"]
-    }
-    </script>
+    <meta name="twitter:image" content="https://danieldumont.com">
 
     <!-- UNIQUE EXIF FEATURE: Industry Standard Lightweight Binary Metadata Parser CDN -->
     <script src="https://jsdelivr.net"></script>
+
+    <!-- PERFORMANCE UPGRADE: Import your local batch-generated manifest natively. Bypasses browser CORS rules completely. -->
+    <script src="images/manifest.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -85,28 +46,17 @@
             <p>Cumbria, UK</p>
         </div>
     </header>
-
     <!-- Navigation Curation Filters & Controls -->
     <div class="filter-container">
         <div class="filter-bar">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="motorsport">Motorsport</button>
+            <button class="filter-btn active" data-filter="preview">Preview</button>
             <button class="filter-btn" data-filter="sport">Sport</button>
             <button class="filter-btn" data-filter="automotive">Automotive</button>
-            <button class="filter-btn" data-filter="animals">Animals</button>
-            <button class="filter-btn" data-filter="landscapes">Landscapes</button>
-            <button class="filter-btn" data-filter="portraits">Portraits</button>
+            <button class="filter-btn" data-filter="wildlife">Wildlife</button>
             <button class="filter-btn" data-filter="other">Other</button>
         </div>
         <div class="filter-controls">
             <!-- Rebuilt Symmetrical About Toggle Icon Button -->
-            <button id="aboutToggle" class="about-toggle-btn" title="View Biography">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </button>
-            
             <button id="rotationToggle" class="control-btn" title="Toggle Auto-Refresh">
                 <!-- Plain Vector Pause Icon (Visible by Default) -->
                 <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -116,6 +66,13 @@
                 <!-- Plain Vector Play Icon (Hidden by Default) -->
                 <svg class="icon-play hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            </button>
+
+            <button id="aboutToggle" class="about-toggle-btn" title="View Biography">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
                 </svg>
             </button>
         </div>
@@ -159,8 +116,8 @@
         <span class="lightbox-close" id="lightboxClose">close</span>
         
         <!-- Fixed Control DecouPLING Wrap Container Row -->
-        <div class="lightbox-nav-controls" style="display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: center;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 24px;">
+        <div class="lightbox-nav-controls">
+            <div>
                 <button id="lightboxPrev" class="lightbox-nav-arrow" title="Previous Image">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
@@ -181,6 +138,48 @@
             <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged gallery view">
         </div>
     </div>
+
+    <!-- Structured JSON-LD Schema (Google Rich Snippets Engine) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PhotographyBusiness",
+      "name": "Daniel Dumont Photography",
+      "image": "https://danieldumont.com",
+      "@id": "https://danieldumont.com#business",
+      "url": "https://danieldumont.com",
+      "telephone": "",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Cumbria",
+        "addressCountry": "GB"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 54.5772,
+        "longitude": -2.7480
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "sameAs": [
+        "https://instagram.com",
+        "https://photocrowd.com"
+      ],
+      "knowsAbout": ["Motorsport Photography", "Automotive Photography", "Sport Photography", "Landscape Photography"]
+    }
+    </script>
 
     <script src="script.js"></script>
 </body>
