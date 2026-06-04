@@ -16,7 +16,11 @@
     
     --card-overlay: rgba(13, 13, 17, 0.45);
     --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    --gap: 24px;                 
+    --gap: 24px;
+    
+    /* Font families */
+    --font-heading: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Light mode colors */
@@ -31,7 +35,7 @@ body.light-mode {
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-body);
     background-color: var(--bg-base);
     background-image: radial-gradient(circle at 50% -20%, #1e1b2b 0%, var(--bg-base) 60%);
     color: var(--text-primary);
@@ -55,21 +59,23 @@ header {
 }
 
 .header-title h1 {
-    font-size: 1.8rem;           
-    font-weight: 200;
+    font-family: var(--font-heading);
+    font-size: 2.2rem;           
+    font-weight: 500;
     letter-spacing: -0.02em;     
     line-height: 1.1;
 }
 
 .header-title h1 span {
-    font-weight: 400;
+    font-weight: 600;
     color: var(--accent-warm);
 }
 
 .header-meta {
+    font-family: var(--font-body);
     font-size: 0.85rem;
-    font-weight: 300;
-    letter-spacing: 0.05em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-muted);
 }
@@ -103,9 +109,9 @@ header {
     background: none;
     border: none;
     color: var(--text-primary); 
-    font-family: inherit;
+    font-family: var(--font-body);
     font-size: 0.9rem;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     cursor: pointer;
@@ -228,17 +234,19 @@ body.light-mode .control-btn.locked {
 }
 
 .about-section-content p {
+    font-family: var(--font-body);
     font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.6;
+    font-weight: 400;
+    line-height: 1.7;
     color: var(--text-muted);
     margin-bottom: 20px;
 }
 
 .about-section-content .about-lead {
-    font-size: 1.25rem;
-    font-weight: 200;
-    line-height: 1.5;
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.6;
     color: var(--text-primary);
     letter-spacing: -0.01em;
 }
@@ -389,8 +397,9 @@ body.light-mode .gallery-item:hover {
 }
 
 .empty-state p {
+    font-family: var(--font-body);
     font-size: 1rem;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -427,8 +436,9 @@ body.light-mode footer {
 }
 
 .footer-copyright p {
+    font-family: var(--font-body);
     font-size: 0.8rem;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.02em;
     color: var(--text-muted);
 }
@@ -439,8 +449,9 @@ body.light-mode footer {
 }
 
 .footer-link {
+    font-family: var(--font-body);
     font-size: 0.85rem;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.05em;
     color: var(--text-muted);
     text-decoration: none;
@@ -534,9 +545,10 @@ body.light-mode .lightbox {
 }
 
 .lightbox-counter {
+    font-family: var(--font-heading);
     color: var(--text-primary);
     font-size: 0.85rem;
-    font-weight: 300;
+    font-weight: 500;
     opacity: 0.5;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -552,6 +564,7 @@ body.light-mode .lightbox {
 }
 
 .lightbox-exif-text {
+    font-family: var(--font-body);
     color: var(--text-muted);
     font-size: 0.72rem;
     font-weight: 400;
@@ -580,6 +593,7 @@ body.light-mode .lightbox {
 }
 
 .hint-item {
+    font-family: var(--font-body);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -587,12 +601,13 @@ body.light-mode .lightbox {
 }
 
 kbd {
+    font-family: 'Courier New', monospace;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     padding: 2px 6px;
     font-size: 0.6rem;
-    font-family: monospace;
+    font-weight: 500;
     white-space: nowrap;
 }
 
@@ -637,8 +652,9 @@ body.light-mode .lightbox-content {
 .lightbox.active .lightbox-content { transform: translateY(0) scale(1); }
 
 .lightbox-close {
+    font-family: var(--font-body);
     position: absolute; top: 40px; right: 40px; color: var(--text-primary);
-    font-size: 0.9rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase;
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
     cursor: pointer; opacity: 0.5; transition: var(--transition);
     z-index: 2100;
 }
@@ -675,7 +691,7 @@ body.light-mode .lightbox-content {
     .hint-item { gap: 4px; }
     kbd { padding: 2px 4px; font-size: 0.55rem; }
 
-    .header-title h1 { font-size: 1.4rem; }
+    .header-title h1 { font-size: 1.6rem; }
     .filter-bar { gap: 20px; }
 }
 
