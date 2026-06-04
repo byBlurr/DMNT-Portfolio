@@ -174,7 +174,7 @@ function updateLightboxContent() {
     lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
     
     // Clear out any previous text to prevent layout overlapping jumps
-    lightboxExif.textContent = "reading data...";
+    lightboxExif.textContent = "";
     
     // ASYNC EXIF PIPELINE: Intercept image data stream and extract camera settings
     if (typeof EXIF !== 'undefined') {
@@ -184,8 +184,9 @@ function updateLightboxContent() {
         
         tempImg.onload = function() {
             EXIF.getData(tempImg, function() {
+                // https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js
                 const model = EXIF.getTag(this, 'Model');
-                const lense = EXIF.getTag(this, "LensModel");
+                //const lense = EXIF.getTag(this, "LensModel");
                 const focalLength = EXIF.getTag(this, 'FocalLength');
                 const fNumber = EXIF.getTag(this, 'FNumber');
                 const exposureTime = EXIF.getTag(this, 'ExposureTime');
@@ -193,7 +194,7 @@ function updateLightboxContent() {
                 
                 // If no EXIF data found, clear and return
                 if (!model && !lense && !focalLength && !fNumber && !exposureTime && !iso) {
-                    lightboxExif.textContent = "";
+                    lightboxExif.textContent = "Unable to load camera setting data";
                     return;
                 }
                 
@@ -214,7 +215,7 @@ function updateLightboxContent() {
                 const isoVal = iso ? `ISO ${iso}` : "ISO ---";
                 
                 // Typeset the finished editorial horizontal metadata strip
-                lightboxExif.textContent = `${camera} - ${lense}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
             });
         };
         
