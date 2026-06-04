@@ -184,8 +184,9 @@ function updateLightboxContent() {
         
         tempImg.onload = function() {
             EXIF.getData(tempImg, function() {
+                // https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js
                 const model = EXIF.getTag(this, 'Model');
-                const lense = EXIF.getTag(this, "LensModel");
+                //const lense = EXIF.getTag(this, "LensModel");
                 const focalLength = EXIF.getTag(this, 'FocalLength');
                 const fNumber = EXIF.getTag(this, 'FNumber');
                 const exposureTime = EXIF.getTag(this, 'ExposureTime');
@@ -214,7 +215,7 @@ function updateLightboxContent() {
                 const isoVal = iso ? `ISO ${iso}` : "ISO ---";
                 
                 // Typeset the finished editorial horizontal metadata strip
-                lightboxExif.textContent = `${camera} - ${lense}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
             });
         };
         
