@@ -16,7 +16,6 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const lightboxCounter = document.getElementById('lightboxCounter'); 
-const lightboxCategory = document.getElementById('lightboxCategory'); 
 
 // Lightbox Navigation Selectors
 const lightboxPrev = document.getElementById('lightboxPrev');
@@ -35,7 +34,7 @@ const iconMoon = themeToggle.querySelector('.icon-moon');
 let allDiscoveredItems = [];
 let rotationTimer = null;
 let currentActiveFilter = 'preview'; 
-let isRotationLocked = false;     
+let isRotationLocked = false;     // Tracks manual suspension status
 
 // Navigation Memory Shifting Anchors
 let activeImagePool = [];
@@ -160,78 +159,71 @@ function generateAndRenderGallery() {
         }, 50);
     });
 }
-const lightboxExif = document.getElementById('lightboxExif'); 
-// Lightbox Syncing Renderer Subroutine Module with Async Binary Fetch Parsing
+
+const lightboxExif = document.getElementById('lightboxExif'); // New Exif Selector
+// Lightbox Syncing Renderer Subroutine Module with Async Exif Extraction
 function updateLightboxContent() {
     if (activeImagePool.length === 0) return;
     
     const activeData = activeImagePool[currentLightboxIndex];
-    
-    // Clear out any previous text to prevent layout overlapping jumps
-    lightboxExif.textContent = "reading data...";
     lightboxImg.src = activeData.src;
-
-    // DIRECT BINARY PIPELINE: Fetch the asset payload into an independent memory stream array buffer
-    fetch(activeData.src)
-        .then(response => {
-            if (!response.ok) throw new Error("Network allocation failed");
-            return response.blob();
-        })
-        .then(blob => {
-            if (typeof EXIF !== 'undefined') {
-                // Pass the clean blob file structure directly into the parser core
-                EXIF.getData(blob, function() {
-                    const model = EXIF.getTag(this, 'Model');
-                    const focalLength = EXIF.getTag(this, 'FocalLength');
-                    const fNumber = EXIF.getTag(this, 'FNumber');
-                    const exposureTime = EXIF.getTag(this, 'ExposureTime');
-                    const iso = EXIF.getTag(this, 'ISO');
-                    
-                    // Fallback handler: If photo headers are compressed or empty, strip path to print file name string
-                    if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
-                        const fileSegments = activeData.src.split('/');
-                        lightboxExif.textContent = fileSegments[fileSegments.length - 1].toUpperCase();
-                        return;
-                    }
-                    
-                    // Format Shutter Speed decimal floats cleanly into fractions
-                    let shutter = "---";
-                    if (exposureTime) {
-                        if (exposureTime < 1) {
-                            shutter = `1/${Math.round(1 / exposureTime)}s`;
-                        } else {
-                            shutter = `${exposureTime}s`;
-                        }
-                    }
-                    
-                    // Gather variables and handle fallbacks smoothly
-                    const camera = model || "Unknown Camera";
-                    const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
-                    const fStop = fNumber ? `f/${fNumber}` : "---";
-                    const isoVal = iso ? `ISO ${iso}` : "---";
-                    
-                    // Typeset the finished editorial horizontal metadata strip
-                    lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
-                });
-            } else {
-                lightboxExif.textContent = "";
-            }
-        })
-        .catch(error => {
-            // Error handling fallback: Display pure text string extracted from asset directory paths
-            const fileSegments = activeData.src.split('/');
-            lightboxExif.textContent = fileSegments[fileSegments.length - 1].toUpperCase();
-            console.warn("EXIF read bypassed:", error.message);
-        });
     
     // Sync the sequential counter numbers (01 / 09)
     const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
     const totalNumber = String(activeImagePool.length).padStart(2, '0');
     lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
-
-    // ADDED: Inject the active photograph's category name into the structural text area
-    if (lightboxCategory) {
-        lightboxCategory.textContent = activeData.category;
+    
+    // Clear out any previous text to prevent layout overlapping jumps
+    lightboxExif.textContent = "reading data...";
+    
+    // ASYNC EXIF PIPELINE: Intercept image data stream and extract camera settings
+    if (typeof EXIF !== 'undefined') {
+        // Create an image object to read EXIF data from
+        const tempImg = new Image();
+        tempImg.crossOrigin = 'anonymous';
+        
+        tempImg.onload = function() {
+            EXIF.getData(tempImg, function() {
+                const model = EXIF.getTag(this, 'Model');
+                const focalLength = EXIF.getTag(this, 'FocalLength');
+                const fNumber = EXIF.getTag(this, 'FNumber');
+                const exposureTime = EXIF.getTag(this, 'ExposureTime');
+                const iso = EXIF.getTag(this, 'ISO');
+                
+                // If no EXIF data found, clear and return
+                if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
+                    lightboxExif.textContent = "";
+                    return;
+                }
+                
+                // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
+                let shutter = "---";
+                if (exposureTime) {
+                    if (exposureTime < 1) {
+                        shutter = `1/${Math.round(1 / exposureTime)}s`;
+                    } else {
+                        shutter = `${exposureTime}s`;
+                    }
+                }
+                
+                // Gather variables and handle null fallbacks safely
+                const camera = model || "Unknown Camera";
+                const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
+                const fStop = fNumber ? `f/${fNumber}` : "---";
+                const isoVal = iso ? `ISO ${iso}` : "---";
+                
+                // Typeset the finished editorial horizontal metadata strip
+                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+            });
+        };
+        
+        tempImg.onerror = function() {
+            lightboxExif.textContent = "";
+        };
+        
+        tempImg.src = activeData.src;
+    } else {
+        lightboxExif.textContent = "";
     }
 }
 
@@ -284,6 +276,7 @@ function dismissLightbox() {
     document.body.style.overflow = '';
     startAutoRotationLoop(); 
 }
+
 // 6. Manual user filtering menu button bindings
 function setupFilterInteractions() {
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -367,6 +360,7 @@ aboutToggle.addEventListener('click', () => {
         aboutToggle.classList.remove('active');
     }
 });
+
 // 11. Dark/Light Mode Toggle
 themeToggle.addEventListener('click', () => {
     const isDarkMode = !document.body.classList.contains('light-mode');
@@ -393,23 +387,23 @@ lightboxNext.addEventListener('click', (e) => {
     navigateLightbox(1);
 });
 
-// Unified Lightbox Dismiss Triggers
+// Unified Lightbox Dismiss Triggers (Fires dismissLightbox to resume timer)
 lightboxClose.addEventListener('click', dismissLightbox);
 lightbox.addEventListener('click', (e) => { 
-    dismissLightbox(); 
+    if (e.target === lightbox) dismissLightbox(); 
 });
 
 // Swipe gesture detection
 lightbox.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches.clientX;
-    touchStartY = e.touches.clientY;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
 lightbox.addEventListener('touchend', (e) => {
     if (!lightbox.classList.contains('active')) return;
     
-    const touchEndX = e.changedTouches.clientX;
-    const touchEndY = e.changedTouches.clientY;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
     
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;
@@ -434,7 +428,7 @@ window.addEventListener('keydown', (e) => {
     else if (e.key === 'ArrowRight') navigateLightbox(1);
 });
 
-// INITIALIZATION LIFECYCLE
+// MODIFIED INITIALIZATION LIFECYCLE: Read the generated static manifest file natively as a script element variable
 window.addEventListener('load', () => {
     initTheme();
     loadStaticManifest();
