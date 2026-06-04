@@ -16,7 +16,7 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const lightboxCounter = document.getElementById('lightboxCounter'); 
-const lightboxCategory = document.getElementById('lightboxCategory'); // ADDED: New structural category selector
+const lightboxCategory = document.getElementById('lightboxCategory'); 
 
 // Lightbox Navigation Selectors
 const lightboxPrev = document.getElementById('lightboxPrev');
@@ -35,7 +35,7 @@ const iconMoon = themeToggle.querySelector('.icon-moon');
 let allDiscoveredItems = [];
 let rotationTimer = null;
 let currentActiveFilter = 'preview'; 
-let isRotationLocked = false;     // Tracks manual suspension status
+let isRotationLocked = false;     
 
 // Navigation Memory Shifting Anchors
 let activeImagePool = [];
@@ -160,8 +160,8 @@ function generateAndRenderGallery() {
         }, 50);
     });
 }
-const lightboxExif = document.getElementById('lightboxExif'); // New Exif Selector
-// Lightbox Syncing Renderer Subroutine Module with Async Exif Extraction
+const lightboxExif = document.getElementById('lightboxExif'); 
+// Lightbox Syncing Renderer Subroutine Module with Async Binary Fetch Parsing
 function updateLightboxContent() {
     if (activeImagePool.length === 0) return;
     
@@ -169,63 +169,60 @@ function updateLightboxContent() {
     
     // Clear out any previous text to prevent layout overlapping jumps
     lightboxExif.textContent = "reading data...";
+    lightboxImg.src = activeData.src;
 
-    // Resolve structural absolute reference chains so background XMLHttpRequest pipelines execute flawlessly everywhere
-    const resolvedAbsoluteUrl = new URL(activeData.src, window.location.href).href;
-
-    // Use a unified image container instanced in memory to map pure cross-origin data payloads securely
-    const exifRequestCarrier = new Image();
-    exifRequestCarrier.crossOrigin = "anonymous";
-
-    exifRequestCarrier.onload = function() {
-        if (typeof EXIF !== 'undefined') {
-            EXIF.getData(exifRequestCarrier, function() {
-                const model = EXIF.getTag(this, 'Model');
-                const focalLength = EXIF.getTag(this, 'FocalLength');
-                const fNumber = EXIF.getTag(this, 'FNumber');
-                const exposureTime = EXIF.getTag(this, 'ExposureTime');
-                const iso = EXIF.getTag(this, 'ISO');
-                
-                // Safety handler: If photo lacks hardware data metrics, typeset a clean structural asset label instead
-                if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
-                    const filenameSegments = activeData.src.split('/');
-                    lightboxExif.textContent = filenameSegments[filenameSegments.length - 1].toUpperCase();
-                    return;
-                }
-                
-                // Format Shutter Speed decimal floats cleanly into fractions (e.g., 0.0005 -> 1/2000s)
-                let shutter = "---";
-                if (exposureTime) {
-                    if (exposureTime < 1) {
-                        shutter = `1/${Math.round(1 / exposureTime)}s`;
-                    } else {
-                        shutter = `${exposureTime}s`;
+    // DIRECT BINARY PIPELINE: Fetch the asset payload into an independent memory stream array buffer
+    fetch(activeData.src)
+        .then(response => {
+            if (!response.ok) throw new Error("Network allocation failed");
+            return response.blob();
+        })
+        .then(blob => {
+            if (typeof EXIF !== 'undefined') {
+                // Pass the clean blob file structure directly into the parser core
+                EXIF.getData(blob, function() {
+                    const model = EXIF.getTag(this, 'Model');
+                    const focalLength = EXIF.getTag(this, 'FocalLength');
+                    const fNumber = EXIF.getTag(this, 'FNumber');
+                    const exposureTime = EXIF.getTag(this, 'ExposureTime');
+                    const iso = EXIF.getTag(this, 'ISO');
+                    
+                    // Fallback handler: If photo headers are compressed or empty, strip path to print file name string
+                    if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
+                        const fileSegments = activeData.src.split('/');
+                        lightboxExif.textContent = fileSegments[fileSegments.length - 1].toUpperCase();
+                        return;
                     }
-                }
-                
-                // Gather variables and handle null fallbacks safely
-                const camera = model || "Camera System Configured";
-                const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
-                const fStop = fNumber ? `f/${fNumber}` : "---";
-                const isoVal = iso ? `ISO ${iso}` : "---";
-                
-                // Typeset the finished editorial horizontal metadata strip
-                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
-            });
-        } else {
-            lightboxExif.textContent = "";
-        }
-    };
-
-    exifRequestCarrier.onerror = function() {
-        // Fallback layout processing if file loading yields tracking interruptions or security alerts
-        const filenameSegments = activeData.src.split('/');
-        lightboxExif.textContent = filenameSegments[filenameSegments.length - 1].toUpperCase();
-    };
-    
-    // Fire the extraction loop instance sequence natively
-    exifRequestCarrier.src = resolvedAbsoluteUrl;
-    lightboxImg.src = resolvedAbsoluteUrl;
+                    
+                    // Format Shutter Speed decimal floats cleanly into fractions
+                    let shutter = "---";
+                    if (exposureTime) {
+                        if (exposureTime < 1) {
+                            shutter = `1/${Math.round(1 / exposureTime)}s`;
+                        } else {
+                            shutter = `${exposureTime}s`;
+                        }
+                    }
+                    
+                    // Gather variables and handle fallbacks smoothly
+                    const camera = model || "Unknown Camera";
+                    const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
+                    const fStop = fNumber ? `f/${fNumber}` : "---";
+                    const isoVal = iso ? `ISO ${iso}` : "---";
+                    
+                    // Typeset the finished editorial horizontal metadata strip
+                    lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+                });
+            } else {
+                lightboxExif.textContent = "";
+            }
+        })
+        .catch(error => {
+            // Error handling fallback: Display pure text string extracted from asset directory paths
+            const fileSegments = activeData.src.split('/');
+            lightboxExif.textContent = fileSegments[fileSegments.length - 1].toUpperCase();
+            console.warn("EXIF read bypassed:", error.message);
+        });
     
     // Sync the sequential counter numbers (01 / 09)
     const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
@@ -437,7 +434,7 @@ window.addEventListener('keydown', (e) => {
     else if (e.key === 'ArrowRight') navigateLightbox(1);
 });
 
-// MODIFIED INITIALIZATION LIFECYCLE: Read the generated static manifest file natively as a script element variable
+// INITIALIZATION LIFECYCLE
 window.addEventListener('load', () => {
     initTheme();
     loadStaticManifest();
