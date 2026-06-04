@@ -505,9 +505,10 @@ body.light-mode .lightbox {
 
 .lightbox.active { opacity: 1; pointer-events: auto; }
 
+/* MODIFIED: Returned back to top alignment layout rules */
 .lightbox-nav-controls {
     position: absolute;
-    bottom: 40px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -516,24 +517,6 @@ body.light-mode .lightbox {
     justify-content: center;
     gap: 16px;
     z-index: 2100;
-}
-
-/* ADDED: Styling rules for your newly declared category label element block */
-.lightbox-category-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 20px;
-}
-
-.lightbox-category-text {
-    font-family: var(--font-heading);
-    color: var(--accent-warm);
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    white-space: nowrap;
 }
 
 .lightbox-nav-row {
@@ -593,6 +576,15 @@ body.light-mode .lightbox {
     max-width: 90vw;
 }
 
+/* ADDED: Custom wrapper layer to cleanly layout keyboard shortcut layout anchors at bottom */
+.lightbox-bottom-hints {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2100;
+}
+
 /* Keyboard hints */
 .lightbox-hints {
     display: flex;
@@ -638,7 +630,7 @@ body.light-mode kbd {
 .lightbox-img-wrapper {
     width: 85%;
     height: 70vh;
-    margin-bottom: 60px;
+    margin-top: 60px; /* MODIFIED: Reset back to margin-top to separate image away from top metrics bar */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -698,12 +690,14 @@ body.light-mode .lightbox-content {
     .gallery-container { padding: 30px 20px 60px 20px; }
 
     /* Mobile lightbox improvements */
-    .lightbox-nav-controls { bottom: 20px; gap: 12px; }
-    .lightbox-category-text { font-size: 0.7rem; letter-spacing: 0.15em; } /* MODIFIED: Sized nicely for mobile spaces */
+    .lightbox-nav-controls { top: 20px; gap: 12px; } /* MODIFIED: Keeps metadata and counters at top on small screens */
     .lightbox-nav-row { gap: 16px; }
     .lightbox-close { top: auto; bottom: 20px; right: 50%; transform: translateX(50%); font-size: 0.8rem; }
-    .lightbox-img-wrapper { height: 50vh; margin-bottom: 30px; width: 90%; }
+    .lightbox-img-wrapper { height: 50vh; margin-top: 30px; width: 90%; } /* MODIFIED: Restores upper layout breathing space on mobile */
     .lightbox-exif-text { font-size: 0.65rem; max-width: 85vw; }
+    
+    /* MODIFIED: Safely keeps isolated key hints pinned nicely to the bottom workspace rail on mobile */
+    .lightbox-bottom-hints { bottom: 60px; } 
     .lightbox-hints { gap: 12px; font-size: 0.55rem; }
     .hint-item { gap: 4px; }
     kbd { padding: 2px 4px; font-size: 0.55rem; }
@@ -717,8 +711,9 @@ body.light-mode .lightbox-content {
     .gallery-container { padding: 20px 16px 40px 16px; }
     .filter-container { padding: 0 16px 20px 16px; gap: 10px; }
     .gallery-item { border-radius: 8px; }
-    .lightbox-img-wrapper { height: 45vh; margin-bottom: 20px; }
-    .lightbox-nav-controls { bottom: 16px; }
+    .lightbox-img-wrapper { height: 45vh; margin-top: 20px; } /* MODIFIED: Mobile layout height adaptation */
+    .lightbox-nav-controls { top: 16px; } /* MODIFIED: Tightly groups top elements on tight displays */
+    .lightbox-bottom-hints { bottom: 50px; } /* MODIFIED: Snaps shortcuts to bottom boundaries safely */
     .lightbox-close { bottom: 16px; right: 50%; font-size: 0.75rem; }
     .filter-btn { font-size: 0.8rem; padding-bottom: 6px; }
     .about-toggle-btn,

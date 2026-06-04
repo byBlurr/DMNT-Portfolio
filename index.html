@@ -132,9 +132,9 @@
     <div class="lightbox" id="lightbox">
         <span class="lightbox-close" id="lightboxClose">close</span>
         
-        <!-- Fixed Control Decoupling Wrap Container Row -->
+        <!-- MODIFIED: Top Control Wrapper Area (Holds Category, Arrows, and Counter) -->
         <div class="lightbox-nav-controls">
-            <!-- ADDED: Category identifier label slotted above the numeric layout row -->
+            <!-- Category identifier label slotted above the numeric layout row -->
             <div class="lightbox-category-container">
                 <span id="lightboxCategory" class="lightbox-category-text"></span>
             </div>
@@ -155,8 +155,15 @@
             <div class="lightbox-exif-container">
                 <span id="lightboxExif" class="lightbox-exif-text"></span>
             </div>
+        </div>
+        
+        <!-- Frame container isolating image scaling profiles -->
+        <div class="lightbox-img-wrapper">
+            <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged gallery view">
+        </div>
 
-            <!-- Keyboard Hints -->
+        <!-- MODIFIED: Isolated bottom container tracking only keyboard shortcuts and hints -->
+        <div class="lightbox-bottom-hints">
             <div class="lightbox-hints">
                 <span class="hint-item">
                     <kbd>←</kbd> <kbd>→</kbd> Navigate
@@ -165,11 +172,6 @@
                     <kbd>ESC</kbd> Close
                 </span>
             </div>
-        </div>
-        
-        <!-- Frame container isolating image scaling profiles -->
-        <div class="lightbox-img-wrapper">
-            <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged gallery view">
         </div>
     </div>
 
