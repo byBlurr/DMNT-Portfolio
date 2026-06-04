@@ -193,7 +193,7 @@ function updateLightboxContent() {
                 const iso = EXIF.getTag(this, 'ISOSpeedRatings');
                 
                 // If no EXIF data found, clear and return
-                if (!model && !lense && !focalLength && !fNumber && !exposureTime && !iso) {
+                if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
                     lightboxExif.textContent = "Unable to load camera setting data";
                     return;
                 }
@@ -215,7 +215,8 @@ function updateLightboxContent() {
                 const isoVal = iso ? `ISO ${iso}` : "ISO ---";
                 
                 // Typeset the finished editorial horizontal metadata strip
-                lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
+                //lightboxExif.textContent = `${camera}   |   ${focal}   |   ${fStop}   |   ${shutter}   |   ${isoVal}`;
+                lightboxExif.innerHTML = `<i class="fas fa-camera"></i> ${camera}   |   ${focal}   |   ${fStop}   |   ${shutter}   |   ${isoVal}`;
             });
         };
         
