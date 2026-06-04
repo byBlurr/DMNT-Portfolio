@@ -10,24 +10,24 @@
     <meta name="keywords" content="Daniel Dumont, photographer Cumbria, motorsport photography UK, automotive photographer, sport photography, Lake District photographer, action sports photography[...]">
     <meta name="author" content="Daniel Dumont">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://byblurr.github.io/DMNT-Portfolio/">
+    <link rel="canonical" href="https://danieldumont.com">
 
     <!-- Open Graph / Facebook / LinkedIn Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Daniel Dumont &mdash; Selected Work">
     <meta property="og:description" content="Cinematic motorsport, action sport, and automotive photography by independent visual artist Daniel Dumont. Based in Cumbria, UK.">
-    <meta property="og:url" content="https://byblurr.github.io/DMNT-Portfolio/">
-    <meta property="og:image" content="https://byblurr.github.io/DMNT-Portfolio/">
+    <meta property="og:url" content="https://danieldumont.com">
+    <meta property="og:image" content="https://danieldumont.com">
     <meta property="og:site_name" content="Daniel Dumont Photography">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Daniel Dumont &mdash; Selected Work">
     <meta name="twitter:description" content="Cinematic motorsport, action sport, and automotive photography by independent visual artist Daniel Dumont. Based in Cumbria, UK.">
-    <meta name="twitter:image" content="https://byblurr.github.io/DMNT-Portfolio/">
+    <meta name="twitter:image" content="https://danieldumont.com">
 
     <!-- EXIF Data Parser: Extract camera metadata from images -->
-    <script src="cdn.jsdelivr.net/npm/exif-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
     <!-- PERFORMANCE UPGRADE: Import your local batch-generated manifest natively. Bypasses browser CORS rules completely. -->
     <script src="images/manifest.js"></script>
@@ -99,7 +99,7 @@
     <!-- Integrated Minimalist Inline About Profile Section -->
     <div id="aboutSection" class="about-section-container hidden">
         <div class="about-section-content">
-            <p class="about-lead">This about section is not complete yet, this text is gibberish from AI... Daniel Dumont is an independent visual artist based in Cumbria, UK, specializing in cinematic motorsport, action sport, and atmospheric automotive photography.</p>
+            <p class="about-lead">Daniel Dumont is an independent visual artist based in Cumbria, UK, specializing in cinematic motorsport, action sport, and atmospheric automotive photography.</p>
             <p>Capturing the raw intersection of high speed, structured mechanical design, and dramatic natural terrains, his archive focused on freezing high-contrast, editorial moments with pure[...]</p>
             <p class="about-contact">For assignments, licensing, or commercial inquiries: <a href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></p>
         </div>
@@ -114,6 +114,7 @@
     <div id="emptyState" class="empty-state hidden fade-out">
         <p>no images available in this collection</p>
     </div>
+
     <!-- Modern Minimalist Footer Section -->
     <footer>
         <div class="footer-content">
@@ -122,8 +123,8 @@
             </div>
             <div class="footer-links">
                 <a href="mailto:hello@yourdomain.com" class="footer-link">Contact</a>
-                <a href="https://instagram.com/dmnt.photos" target="_blank" rel="noopener" class="footer-link">Instagram</a>
-                <a href="https://photocrowd.com/blurr" target="_blank" rel="noopener" class="footer-link">Photocrowd</a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" class="footer-link">Instagram</a>
+                <a href="https://photocrowd.com" target="_blank" rel="noopener" class="footer-link">Photocrowd</a>
             </div>
         </div>
     </footer>
@@ -132,13 +133,8 @@
     <div class="lightbox" id="lightbox">
         <span class="lightbox-close" id="lightboxClose">close</span>
         
-        <!-- MODIFIED: Top Control Wrapper Area (Holds Category, Arrows, and Counter) -->
+        <!-- Fixed Control Decoupling Wrap Container Row -->
         <div class="lightbox-nav-controls">
-            <!-- Category identifier label slotted above the numeric layout row -->
-            <div class="lightbox-category-container">
-                <span id="lightboxCategory" class="lightbox-category-text"></span>
-            </div>
-
             <div class="lightbox-nav-row">
                 <button id="lightboxPrev" class="lightbox-nav-arrow" title="Previous Image (← or swipe left)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -155,15 +151,8 @@
             <div class="lightbox-exif-container">
                 <span id="lightboxExif" class="lightbox-exif-text"></span>
             </div>
-        </div>
-        
-        <!-- Frame container isolating image scaling profiles -->
-        <div class="lightbox-img-wrapper">
-            <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged gallery view">
-        </div>
 
-        <!-- MODIFIED: Isolated bottom container tracking only keyboard shortcuts and hints -->
-        <div class="lightbox-bottom-hints">
+            <!-- Keyboard Hints -->
             <div class="lightbox-hints">
                 <span class="hint-item">
                     <kbd>←</kbd> <kbd>→</kbd> Navigate
@@ -173,6 +162,11 @@
                 </span>
             </div>
         </div>
+        
+        <!-- Frame container isolating image scaling profiles -->
+        <div class="lightbox-img-wrapper">
+            <img class="lightbox-content" id="lightboxImg" src="" alt="Enlarged gallery view">
+        </div>
     </div>
 
     <!-- Structured JSON-LD Schema (Google Rich Snippets Engine) -->
@@ -181,9 +175,9 @@
       "@context": "https://schema.org",
       "@type": "PhotographyBusiness",
       "name": "Daniel Dumont Photography",
-      "image": "https://byblurr.github.io/DMNT-Portfolio/",
-      "@id": "https://byblurr.github.io/DMNT-Portfolio/#business",
-      "url": "https://byblurr.github.io/DMNT-Portfolio/",
+      "image": "https://danieldumont.com",
+      "@id": "https://danieldumont.com#business",
+      "url": "https://danieldumont.com",
       "telephone": "",
       "address": {
         "@type": "PostalAddress",
