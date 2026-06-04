@@ -170,22 +170,26 @@ function updateLightboxContent() {
     // Clear out any previous text to prevent layout overlapping jumps
     lightboxExif.textContent = "reading data...";
 
-    // CRITICAL CACHE CLEAR: Purge the custom property cache record stored internally by exif-js
-    lightboxImg.exifdata = null;
+    // Resolve structural absolute reference chains so background XMLHttpRequest pipelines execute flawlessly everywhere
+    const resolvedAbsoluteUrl = new URL(activeData.src, window.location.href).href;
 
-    // Use a clean named function for the event listener to avoid duplicate listener stacking logs
-    function parseExifDataOnLoad() {
+    // Use a unified image container instanced in memory to map pure cross-origin data payloads securely
+    const exifRequestCarrier = new Image();
+    exifRequestCarrier.crossOrigin = "anonymous";
+
+    exifRequestCarrier.onload = function() {
         if (typeof EXIF !== 'undefined') {
-            EXIF.getData(lightboxImg, function() {
+            EXIF.getData(exifRequestCarrier, function() {
                 const model = EXIF.getTag(this, 'Model');
                 const focalLength = EXIF.getTag(this, 'FocalLength');
                 const fNumber = EXIF.getTag(this, 'FNumber');
                 const exposureTime = EXIF.getTag(this, 'ExposureTime');
                 const iso = EXIF.getTag(this, 'ISO');
                 
-                // If no EXIF data found, clear and return
+                // Safety handler: If photo lacks hardware data metrics, typeset a clean structural asset label instead
                 if (!model && !focalLength && !fNumber && !exposureTime && !iso) {
-                    lightboxExif.textContent = "";
+                    const filenameSegments = activeData.src.split('/');
+                    lightboxExif.textContent = filenameSegments[filenameSegments.length - 1].toUpperCase();
                     return;
                 }
                 
@@ -200,7 +204,7 @@ function updateLightboxContent() {
                 }
                 
                 // Gather variables and handle null fallbacks safely
-                const camera = model || "Unknown Camera";
+                const camera = model || "Camera System Configured";
                 const focal = focalLength ? `${Math.round(focalLength)}mm` : "---";
                 const fStop = fNumber ? `f/${fNumber}` : "---";
                 const isoVal = iso ? `ISO ${iso}` : "---";
@@ -211,12 +215,17 @@ function updateLightboxContent() {
         } else {
             lightboxExif.textContent = "";
         }
-        // Remove the listener hook safely using the explicit function handle
-        lightboxImg.removeEventListener('load', parseExifDataOnLoad);
-    }
+    };
+
+    exifRequestCarrier.onerror = function() {
+        // Fallback layout processing if file loading yields tracking interruptions or security alerts
+        const filenameSegments = activeData.src.split('/');
+        lightboxExif.textContent = filenameSegments[filenameSegments.length - 1].toUpperCase();
+    };
     
-    lightboxImg.addEventListener('load', parseExifDataOnLoad);
-    lightboxImg.src = activeData.src;
+    // Fire the extraction loop instance sequence natively
+    exifRequestCarrier.src = resolvedAbsoluteUrl;
+    lightboxImg.src = resolvedAbsoluteUrl;
     
     // Sync the sequential counter numbers (01 / 09)
     const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
