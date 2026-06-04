@@ -166,29 +166,14 @@ function updateLightboxContent() {
     if (activeImagePool.length === 0) return;
     
     const activeData = activeImagePool[currentLightboxIndex];
-    lightboxImg.src = activeData.src;
-    
-    // Sync the sequential counter numbers (01 / 09)
-    const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
-    const totalNumber = String(activeImagePool.length).padStart(2, '0');
-    lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
-
-    // ADDED: Inject the active photograph's category name into the structural text area
-    if (lightboxCategory) {
-        lightboxCategory.textContent = activeData.category;
-    }
     
     // Clear out any previous text to prevent layout overlapping jumps
     lightboxExif.textContent = "reading data...";
-    
-    // ASYNC EXIF PIPELINE: Intercept image data stream and extract camera settings
-    if (typeof EXIF !== 'undefined') {
-        // Create an image object to read EXIF data from
-        const tempImg = new Image();
-        tempImg.crossOrigin = 'anonymous';
-        
-        tempImg.onload = function() {
-            EXIF.getData(tempImg, function() {
+
+    // Bind the image data load directly to the DOM-bound target component to allow data reading
+    lightboxImg.onload = function() {
+        if (typeof EXIF !== 'undefined') {
+            EXIF.getData(lightboxImg, function() {
                 const model = EXIF.getTag(this, 'Model');
                 const focalLength = EXIF.getTag(this, 'FocalLength');
                 const fNumber = EXIF.getTag(this, 'FNumber');
@@ -220,15 +205,23 @@ function updateLightboxContent() {
                 // Typeset the finished editorial horizontal metadata strip
                 lightboxExif.textContent = `${camera}   //   ${focal}   //   ${fStop}   //   ${shutter}   //   ${isoVal}`;
             });
-        };
-        
-        tempImg.onerror = function() {
+        } else {
             lightboxExif.textContent = "";
-        };
-        
-        tempImg.src = activeData.src;
-    } else {
-        lightboxExif.textContent = "";
+        }
+        // Remove the listener hook safely to prevent stacked operational executions on subsequent flips
+        lightboxImg.onload = null;
+    };
+    
+    lightboxImg.src = activeData.src;
+    
+    // Sync the sequential counter numbers (01 / 09)
+    const activeNumber = String(currentLightboxIndex + 1).padStart(2, '0');
+    const totalNumber = String(activeImagePool.length).padStart(2, '0');
+    lightboxCounter.textContent = `${activeNumber} / ${totalNumber}`;
+
+    // ADDED: Inject the active photograph's category name into the structural text area
+    if (lightboxCategory) {
+        lightboxCategory.textContent = activeData.category;
     }
 }
 
@@ -364,7 +357,6 @@ aboutToggle.addEventListener('click', () => {
         aboutToggle.classList.remove('active');
     }
 });
-
 // 11. Dark/Light Mode Toggle
 themeToggle.addEventListener('click', () => {
     const isDarkMode = !document.body.classList.contains('light-mode');
